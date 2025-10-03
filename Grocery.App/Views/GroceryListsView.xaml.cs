@@ -1,4 +1,5 @@
 using Grocery.App.ViewModels;
+using Microsoft.Maui.Controls;
 
 namespace Grocery.App.Views;
 
@@ -8,6 +9,16 @@ public partial class GroceryListsView : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
+
+        if (viewModel.IsAdmin)
+        {
+            ToolbarItems.Add(new ToolbarItem
+            {
+                Text = "Verkochte producten",
+                Command = viewModel.ShowBoughtProductsCommand,
+                IconImageSource = "some_icon.png"
+            });
+        }
     }
 
     protected override void OnAppearing()
@@ -16,7 +27,6 @@ public partial class GroceryListsView : ContentPage
         if (BindingContext is GroceryListViewModel bindingContext)
         {
             bindingContext.OnAppearing();
-
         }
     }
 

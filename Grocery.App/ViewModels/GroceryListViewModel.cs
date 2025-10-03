@@ -10,20 +10,29 @@ namespace Grocery.App.ViewModels
     {
         public ObservableCollection<GroceryList> GroceryLists { get; set; }
         private readonly IGroceryListService _groceryListService;
+        private readonly Client _currentClient;
 
-        public GroceryListViewModel(IGroceryListService groceryListService) 
+        public Client CurrentClient => _currentClient;
+
+        public bool IsAdmin => _currentClient.Role == Role.Admin;
+
+        public GroceryListViewModel(IGroceryListService groceryListService, IClientService clientService)
         {
-            Title = "Boodschappenlijst";
             _groceryListService = groceryListService;
+
+            _currentClient = clientService.GetAll().FirstOrDefault() ?? new Client(0, "None", "", "") { Role = Role.None };
+
+            Title = "Boodschappenlijsten";
             GroceryLists = new(_groceryListService.GetAll());
         }
 
         [RelayCommand]
         public async Task SelectGroceryList(GroceryList groceryList)
         {
-            Dictionary<string, object> paramater = new() { { nameof(GroceryList), groceryList } };
+            var paramater = new Dictionary<string, object> { { nameof(GroceryList), groceryList } };
             await Shell.Current.GoToAsync($"{nameof(Views.GroceryListItemsView)}?Titel={groceryList.Name}", true, paramater);
         }
+
         public override void OnAppearing()
         {
             base.OnAppearing();
@@ -34,6 +43,14 @@ namespace Grocery.App.ViewModels
         {
             base.OnDisappearing();
             GroceryLists.Clear();
+        }
+
+        [RelayCommand]
+        public async Task ShowBoughtProducts()
+        {
+            if (!IsAdmin) return;
+
+            await Shell.Current.GoToAsync(nameof(Grocery.App.Views.BoughtProductsView));
         }
     }
 }

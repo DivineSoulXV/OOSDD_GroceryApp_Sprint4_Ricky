@@ -12,7 +12,7 @@ namespace Grocery.App
             Routing.RegisterRoute(nameof(ChangeColorView), typeof(ChangeColorView));
             Routing.RegisterRoute("Login", typeof(LoginView));
             Routing.RegisterRoute(nameof(BestSellingProductsView), typeof(BestSellingProductsView));
-            Routing.RegisterRoute(nameof(BoughtProductsView), typeof(BoughtProductsView));
+            Routing.RegisterRoute(nameof(Grocery.App.Views.BoughtProductsView), typeof(Grocery.App.Views.BoughtProductsView));
         }
     }
 }
